@@ -5,24 +5,24 @@ import { UsersRepository } from './dto/repositories/users.repository';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly repositoryUsers: UsersRepository) {}
+  constructor(private readonly repository: UsersRepository) {}
   create(createUserDto: CreateUserDto) {
-    return this.repositoryUsers.create(createUserDto);
+    return this.repository.create(createUserDto);
   }
 
   findAll() {
-    return `This action returns all users`;
+    return this.repository.findAll();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} user`;
+    return this.repository.findOne(id);
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+    return this.repository.update(id, updateUserDto);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} user`;
+    return this.repository.remove(id);
   }
 }
