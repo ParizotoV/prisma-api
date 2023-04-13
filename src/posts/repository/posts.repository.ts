@@ -66,10 +66,41 @@ export class PostsRepository {
   }
 
   public async update(id: number, updatePostDto: UpdatePostDto): Promise<Post> {
+    const { authorEmail } = updatePostDto;
+
+    if (!authorEmail) {
+      return this.prisma.post.update({
+        data: updatePostDto,
+        where: { id },
+      });
+    }
+
+    delete updatePostDto.authorEmail;
+
+    const user = await this.prisma.user.findUnique({
+      where: { email: authorEmail },
+    });
+
+    if (!user) {
+      throw new NotFoundError('User not found.');
+    }
+
+    const data: Prisma.PostUpdateInput = {
+      ...updatePostDto,
+      author: { connect: { email: authorEmail } },
+    };
+
     const postUpdate = await this.prisma.post.update({
-      data: updatePostDto,
+      data,
       where: {
         id,
+      },
+      include: {
+        author: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
 
